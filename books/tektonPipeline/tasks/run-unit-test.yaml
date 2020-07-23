@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: run-unit-test
+spec:
+  resources:
+    inputs:
+      - name: git-repo
+        type: git
+      - name: image
+        type: image
+  steps:
+    - args:
+        - npm install
+      command:
+        - /bin/sh
+        - '-c'
+      image: $(inputs.resources.image.url)
+      name: install
+      resources: {}
+      workingDir: /workspace/git-repo/books
+    - args:
+        - npm test
+      command:
+        - /bin/sh
+        - '-c'
+      image: $(inputs.resources.image.url)
+      name: unit-test
+      resources: {}
+      workingDir: /workspace/git-repo/books
+    - args:
+        - npm run lint
+      command:
+        - /bin/sh
+        - '-c'
+      image: $(inputs.resources.image.url)
+      name: linting
+      resources: {}
+      workingDir: /workspace/git-repo/books
